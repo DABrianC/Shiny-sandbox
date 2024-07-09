@@ -3,7 +3,7 @@ source(here::here("./prep/prep.R"))
 
 #the user interface
 ui <- fluidPage(
-  titlePanel("Sentiment Analyzer"),
+  titlePanel("Simple Sentiment Analyzer"),
   sidebarLayout(
    sidebarPanel(fileInput(inputId = "file"
             , label = "Drag your file here or browse for it:"
@@ -11,7 +11,7 @@ ui <- fluidPage(
             , checkboxGroupInput(inputId = "column_names"
                                  , label = "Select text columns"
                                  , inline = FALSE
-                                 , choices = names(file))
+                                 , choices = c())
 ),
   mainPanel(
     tabsetPanel(
@@ -29,20 +29,24 @@ server <- function(input, output, session) {
     read_xlsx(input$file$datapath
               , col_names = TRUE)
   })
+
+  observeEvent(input$file, {
+    req(rtable()) #we need rtable()
+    
+    #update input$column_names with colnames of selected dataset, rtable()
+    updateCheckboxGroupInput(
+      session, 
+      "column_names",
+      choices = colnames(rtable()),
+      selected = colnames(rtable())
+    )
+  })
   
+    
   output$DT_table <- DT::renderDT({
     rtable()
   })
-  
-  output$DT_table <- DT::renderDT({
-    df <- readxl::read_xlsx(input$file
-                      , col_names = TRUE) 
-    return(df)
-    })
-  
-  output$table <- renderTable({
-    input$file 
-  })
+
 }
   
   
