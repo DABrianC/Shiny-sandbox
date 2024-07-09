@@ -9,20 +9,27 @@ ui <- fluidPage(
             , label = "Upload file:"
             , multiple = FALSE)
 ),
-  mainPanel(DT::DTOutput('DT_table')
- )
+  mainPanel(
+    tabsetPanel(
+      tabPanel(
+    DT::DTOutput('DT_table')
+ ),
+  tabPanel(tableOutput('table'))
 )
-)
+)))
 #the server side  
 server <- function(input, output, session) {
   
   # You can access the value of the widget with input$file, e.g.
   output$DT_table <- DT::renderDT({
     input$file |> 
-      readxl::read_xlsx()
+      
     
   })
   
+  output$table <- renderTable({
+    input$file 
+  })
 }
   
   
