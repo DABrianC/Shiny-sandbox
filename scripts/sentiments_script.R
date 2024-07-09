@@ -58,7 +58,7 @@ server <- function(input, output, session) {
       session, 
       "column_names",
       choices = colnames(rtable()),
-      selected = colnames(rtable())
+      selected = ""
     )
   })
   
