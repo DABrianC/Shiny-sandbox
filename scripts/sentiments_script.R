@@ -24,13 +24,32 @@ ui <- fluidPage(
 )))
 #the server side  
 server <- function(input, output, session) {
-  
+
+#Reactive variables  
   # You can access the value of the widget with input$file, e.g.
   rtable <- eventReactive(input$file, {
     read_xlsx(input$file$datapath
               , col_names = TRUE)
   })
 
+  text_react <- reactive({
+    req(input$column_names)
+    
+    rtable() |> 
+      select_at(input$column_names) |>
+      mutate(respondent = row_number()) |>
+      unnest_tokens(word, text_response) |> 
+      inner_join(get_sentiments("bing")) |> 
+      mutate(value = case_when(sentiment == "positive" ~ 1
+                               , sentiment == "negative" ~ 2)) |> 
+      group_by(respondent) |> 
+      summarize(score = sum(value))
+      
+      
+      
+      
+  })
+#Observable variables
   observeEvent(input$file, {
     req(rtable()) #we need rtable()
     
@@ -54,7 +73,7 @@ output$DT_table_react <- DT::renderDT({
   req(input$column_names)
   
   DT::datatable(
-    rtable() |> select_at(input$column_names)
+    text_react()
   )
 })  
   
