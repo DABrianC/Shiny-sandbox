@@ -16,9 +16,10 @@ ui <- fluidPage(
   mainPanel(
     tabsetPanel(
       tabPanel(
-    DT::DTOutput('DT_table')
+        DT::DTOutput('DT_table')
  ),
-  tabPanel(tableOutput('table'))
+      tabPanel(
+        DT::DTOutput('DT_table_react'))
 )
 )))
 #the server side  
@@ -47,10 +48,16 @@ server <- function(input, output, session) {
     rtable()
   })
 
-}
-  
-  
-  
 
+#Testing out the live filter checkboxes  
+output$DT_table_react <- DT::renderDT({
+  req(input$column_names)
+  
+  DT::datatable(
+    rtable() |> select_at(input$column_names)
+  )
+})  
+  
+}
 #build the app
 shinyApp(ui=ui, server=server)
