@@ -16,9 +16,6 @@ ui <- fluidPage(
   mainPanel(
     tabsetPanel(
       tabPanel(
-        DT::DTOutput('DT_table')
- ),
-      tabPanel(
         DT::DTOutput('DT_table_react'))
 )
 )))
@@ -63,11 +60,6 @@ server <- function(input, output, session) {
   })
   
     
-  output$DT_table <- DT::renderDT({
-    rtable()
-  })
-
-
 #Testing out the live filter checkboxes  
 output$DT_table_react <- DT::renderDT({
   req(input$column_names)
