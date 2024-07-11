@@ -41,9 +41,9 @@ server <- function(input, output, session) {
       unnest_tokens(word, text_response) |> 
       inner_join(get_sentiments("bing")) |> 
       mutate(value = case_when(sentiment == "positive" ~ 1
-                               , sentiment == "negative" ~ 2)) |> 
+                               , sentiment == "negative" ~ -1)) |> 
       group_by(respondent) |> 
-      summarize(score = sum(value))
+      summarize(score = mean(value))
       
       
       
