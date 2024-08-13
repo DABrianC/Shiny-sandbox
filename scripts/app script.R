@@ -3,18 +3,22 @@ source(here::here("./prep/prep.R"))
 
 #the user interface
 ui <- fluidPage(
-  titlePanel("Simple Sentiment Analyzer"),
+  titlePanel("Simple Data Tool"),
   sidebarLayout(
    sidebarPanel(fileInput(inputId = "file"
             , label = "Drag your file here or browse for it:"
             , multiple = FALSE)
             , checkboxGroupInput(inputId = "column_names"
-                                 , label = "Select text columns"
+                                 , label = "Select columns"
                                  , inline = FALSE
-                                 , choices = c())
+                                 , choices = c()),
+            actionButton("run_columns", label = "ACTION!!")
 ),
   mainPanel(
     tabsetPanel(
+      tabPanel(DT::DTOutput('DT_table')),
+      
+      
       tabPanel(
         DT::DTOutput('DT_table_react'))
 )
@@ -29,7 +33,7 @@ server <- function(input, output, session) {
               , col_names = TRUE)
   })
 
-  text_react <- reactive({
+  text_react <- eventReactive(input$run_columns, {
     req(input$column_names)
     
     rtable() |> 
@@ -46,6 +50,7 @@ server <- function(input, output, session) {
       
       
   })
+  
 #Observable variables
   observeEvent(input$file, {
     req(rtable()) #we need rtable()
@@ -60,14 +65,26 @@ server <- function(input, output, session) {
   })
   
     
+output$DT_table <- DT::renderDT({
+  req(input$file)
+  
+  DT::datatable(rtable())
+})
+  
 #Testing out the live filter checkboxes  
 output$DT_table_react <- DT::renderDT({
-  req(input$column_names)
-  
-  DT::datatable(
-    text_react()
+    DT::datatable(text_react() 
   )
-})  
+})
+
+
+#output$DT_table_react <- DT::renderDT({
+ # req(input$column_names)
+  
+ # DT::datatable(eventReactive(
+   # text_react())
+#  )
+#})  
   
 }
 #build the app
