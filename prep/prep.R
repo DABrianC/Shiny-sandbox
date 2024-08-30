@@ -1,6 +1,6 @@
 
 
-packages <- c("cowplot", "DT", "extrafont", "extrafontdb", "flextable", "gt"
+packages <- c("bsicons", "bslib", "cowplot", "DT", "extrafont", "extrafontdb", "flextable", "gt"
               , "here", "lubridate", "patchwork", "readxl", "shiny"
               , "shinydashboard", "sf", "tidytext", "tidyverse", "tmap"
               , "tmaptools", "writexl")
@@ -16,13 +16,30 @@ if (any(installed_packages == FALSE)) {
 lapply(packages, library, character.only = TRUE) |>
   invisible()
 
-# Poland shapefile
 
-#pol <- st_read("./data/poland/gadm41_POL_1.shp") |> 
- # filter(NAME_1 == "Lubelskie" | NAME_1 == "Opolskie")
+cards <- list(
+  card(
+    card_header("Map"),
+    tmapOutput("map_sites")
+  ),
+  
+  card(
+    card_header("Imported Data"),
+    DT::DTOutput("DT_table")
+  ),
+  
+  card(card_header("Sites Visited Table"),
+       DT::DTOutput('sites_visited')
+       ),
+  
+  card(card_header("placeholder1"),
+       plotOutput("Placeholder1")
+       ),
+  
+  card(card_header("placeholder2"),
+       plotOutput("Placeholder2")
+      )
+  )
+    
+  
 
-#tmap_mode("view") +
- # tm_shape(pol) +
-  #tm_borders(col = "#BA0C2F", alpha = .3) +
-  #tm_shape(df$geometry) +
-  #tm_dots(col = "#002F6C", alpha = .6)

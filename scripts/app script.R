@@ -2,27 +2,30 @@
 source(here::here("./prep/prep.R"))
 
 #the user interface
-ui <- fluidPage(
-  titlePanel("Simple Data Tool"),
-  sidebarLayout(
-   sidebarPanel(fileInput(inputId = "file"
+ui <- page_navbar(
+  title = "Simple Data Dashboard",
+  sidebar = sidebar(fileInput(inputId = "file"
+            , accept = c(".xlsx", ".csv")
             , label = "Drag your file here or browse for it:"
-            , multiple = FALSE)
-            , checkboxGroupInput(inputId = "column_names"
-                                 , label = "Select columns"
-                                 , inline = FALSE
-                                 , choices = c()),
-            actionButton("run_columns", label = "ACTION!!")
-),
-  mainPanel(
-    tabsetPanel(
-      tabPanel(DT::DTOutput('DT_table')),
-      
-      
-      tabPanel(
-        DT::DTOutput('DT_table_react'))
-)
-)))
+            , multiple = TRUE),
+          checkboxGroupInput(inputId = "column_names"
+                       , label = "Select columns"
+                       , inline = FALSE
+                       , choices = c())
+          ),
+  navset_card_underline(
+  nav_panel("Dashboard",
+              cards[[1]],
+              cards[[2]]),
+  nav_panel("Report Components", cards[[3]], cards[[4]]),
+  #nav_spacer(),
+  #nav_panel("Body Mass", cards[[3]]),
+  #nav_items(
+   # title = "Links",
+   # align = "right")
+))
+
+
 #the server side  
 server <- function(input, output, session) {
 
@@ -46,9 +49,30 @@ server <- function(input, output, session) {
       group_by(respondent) |> 
       summarize(score = mean(value))
       
-      
-      
-      
+  })
+  
+  data_sfr <- eventReactive(input$file, {
+    req(input$file)
+    
+    data <- read_xlsx(input$file$datapath)
+    st_as_sf(data
+             , coords = c("long", "lat")
+             , crs = 4326) 
+  })
+  
+  
+  rsites_visited <- eventReactive(input$sites_visited, {
+    rtable() |> 
+      group_by(location, gender) |> 
+      count() |> 
+      pivot_wider(names_from = gender
+                  , values_from = n) |> 
+      mutate(Total = M + F
+             , `Female Participation (%)` = paste0(F/Total * 100, "%")) |> 
+      rename("Location" = location
+             , "Male" = M
+             , "Female" = F
+      )
   })
   
 #Observable variables
@@ -70,7 +94,28 @@ output$DT_table <- DT::renderDT({
   
   DT::datatable(rtable())
 })
-  
+
+output$sites_visited <- DT::renderDT({
+  DT::datatable(rsites_visited())
+})
+
+#Tmap 
+tmap_mode("view")
+output$map_sites <- tmap::renderTmap({
+    tm_shape(data_sfr()) +
+      tm_dots()
+      })
+
+#download function for table
+
+
+output$download <- downloadHandler(
+  filename = function(){},
+  content = function(file){
+    writexl::write_xlsx(data(), path = file)
+  }
+)
+
 #Testing out the live filter checkboxes  
 output$DT_table_react <- DT::renderDT({
     DT::datatable(text_react() 
