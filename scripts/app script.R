@@ -4,6 +4,11 @@ source(here::here("./prep/prep.R"))
 #the user interface
 ui <- page_navbar(
   title = "Simple Data Dashboard",
+  theme = bs_theme(
+    version = 5,
+    base_font = font_google("Inter"),
+    navbar_bg = "#002F6C"
+  ),
   sidebar = sidebar(fileInput(inputId = "file"
             , accept = c(".xlsx", ".csv")
             , label = "Drag your file here or browse for it:"
@@ -15,9 +20,14 @@ ui <- page_navbar(
           ),
   navset_card_underline(
   nav_panel("Dashboard",
+            layout_column_wrap(
+              width = 1/2,
+              height = 300,
               cards[[1]],
-              cards[[2]]),
-  nav_panel("Report Components", cards[[3]], cards[[4]]),
+              cards[[2]]
+            ),
+              cards[[3]]),
+  nav_panel("Report Components", cards[[4]], cards[[5]]),
   #nav_spacer(),
   #nav_panel("Body Mass", cards[[3]]),
   #nav_items(

@@ -19,25 +19,41 @@ lapply(packages, library, character.only = TRUE) |>
 
 cards <- list(
   card(
+    width = 1/2,
     card_header("Map"),
-    tmapOutput("map_sites")
+    tmapOutput("map_sites"),
+    full_screen = TRUE
+  ),
+  
+  card(
+    width = 1/2,
+    card_header(class = "bg-dark",
+                "Relevant information"
+                ),
+    card_body(
+      markdown("This is a racing bar chart [link](https://github.com/DABrianC/ACLED-Sandbox/blob/main/WestAfricaEventsSumming.gif)")
+    )
   ),
   
   card(
     card_header("Imported Data"),
-    DT::DTOutput("DT_table")
+    DT::DTOutput("DT_table"),
+    full_screen = TRUE
   ),
   
   card(card_header("Sites Visited Table"),
-       DT::DTOutput('sites_visited')
+       DT::DTOutput('sites_visited'),
+       full_screen = TRUE
        ),
   
   card(card_header("placeholder1"),
-       plotOutput("Placeholder1")
+       plotOutput("Placeholder1"),
+       full_screen = TRUE
        ),
   
   card(card_header("placeholder2"),
-       plotOutput("Placeholder2")
+       plotOutput("Placeholder2"),
+       full_screen = TRUE
       )
   )
     
