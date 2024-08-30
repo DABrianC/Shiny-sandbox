@@ -5,9 +5,10 @@ source(here::here("./prep/prep.R"))
 ui <- page_navbar(
   title = "Simple Data Dashboard",
   theme = bs_theme(
+    bootswatch = "litera",
     version = 5,
     base_font = font_google("Inter"),
-    navbar_bg = "#002F6C"
+    #navbar_bg = "#002F6C"
   ),
   sidebar = sidebar(fileInput(inputId = "file"
             , accept = c(".xlsx", ".csv")
