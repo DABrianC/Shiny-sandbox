@@ -28,7 +28,9 @@ ui <- page_navbar(
               cards[[2]]
             ),
               cards[[3]]),
-  nav_panel("Report Components", cards[[4]], cards[[5]]),
+  nav_panel("Report Components",
+            cards[[4]],
+            cards[[5]]),
   #nav_spacer(),
   #nav_panel("Body Mass", cards[[3]]),
   #nav_items(
@@ -72,7 +74,7 @@ server <- function(input, output, session) {
   })
   
   
-  rsites_visited <- eventReactive(input$sites_visited, {
+  rsites_visited <- eventReactive(input$file, {
     rtable() |> 
       group_by(location, gender) |> 
       count() |> 

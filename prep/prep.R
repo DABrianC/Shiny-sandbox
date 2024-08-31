@@ -27,8 +27,7 @@ cards <- list(
   
   card(
     width = 1/2,
-    card_header(class = "bg-dark",
-                "Relevant information"
+    card_header("Relevant information"
                 ),
     card_body(
       markdown("This is a racing bar chart [link](https://github.com/DABrianC/ACLED-Sandbox/blob/main/WestAfricaEventsSumming.gif)")
@@ -46,10 +45,10 @@ cards <- list(
        full_screen = TRUE
        ),
   
-  card(card_header("placeholder1"),
-       plotOutput("Placeholder1"),
-       full_screen = TRUE
-       ),
+  #card(card_header("Sites Visited"),
+   #    DT::DTOutput("sites_visited"),
+    #   full_screen = TRUE
+     #  ),
   
   card(card_header("placeholder2"),
        plotOutput("Placeholder2"),
