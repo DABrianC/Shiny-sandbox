@@ -1,7 +1,7 @@
 
 
-packages <- c("bsicons", "bslib", "cowplot", "DT", "extrafont", "extrafontdb", "flextable", "gt"
-              , "here", "lubridate", "patchwork", "readxl", "shiny"
+packages <- c("bsicons", "bslib", "cowplot", "DT", "extrafont", "extrafontdb"
+              , "flextable", "gt", "here", "lubridate", "patchwork", "readxl", "shiny"
               , "shinydashboard", "sf", "tidytext", "tidyverse", "tmap"
               , "tmaptools", "writexl")
               
@@ -18,13 +18,15 @@ lapply(packages, library, character.only = TRUE) |>
 
 
 cards <- list(
-  card(
+  #1
+  card( 
     width = 1/2,
     card_header("Map"),
     tmapOutput("map_sites"),
     full_screen = TRUE
   ),
   
+  #2
   card(
     width = 1/2,
     card_header("Relevant information"
@@ -34,27 +36,45 @@ cards <- list(
     )
   ),
   
+  #3
   card(
     card_header("Imported Data"),
     DT::DTOutput("DT_table"),
     full_screen = TRUE
   ),
   
-  card(card_header("Sites Visited Table"),
-       DT::DTOutput('sites_visited'),
-       full_screen = TRUE
-       ),
+  #4
+  #card(card_header("Sites Visited Table"),
+   #    DT::DTOutput('sites_visited'),
+    #   full_screen = TRUE
+     #  ),
   
   #card(card_header("Sites Visited"),
    #    DT::DTOutput("sites_visited"),
     #   full_screen = TRUE
      #  ),
   
-  card(card_header("placeholder2"),
-       plotOutput("Placeholder2"),
+  #4
+  card(
+       width = 1/2,
+       card_header("Placeholder"),
+       gt_output("sites_visited_gt"),
        full_screen = TRUE
-      )
+      ),
+  
+  #5
+  card(
+       width = 1/2,
+       card_header("Placeholder2"),
+       markdown("This is a placeholder")
+       , full_screen = TRUE),
+  
+  #6
+  card(card_header("Placeholder2"),
+       markdown("This is a placeholder")
+       , full_screen = TRUE)
   )
+  
     
   
 

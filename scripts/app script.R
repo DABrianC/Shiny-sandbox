@@ -29,8 +29,14 @@ ui <- page_navbar(
             ),
               cards[[3]]),
   nav_panel("Report Components",
-            cards[[4]],
-            cards[[5]]),
+            layout_column_wrap(
+              width = 1/2,
+              height = 300,
+              cards[[4]],
+              cards[[5]]
+            ),
+            cards[[6]],
+        ),
   #nav_spacer(),
   #nav_panel("Body Mass", cards[[3]]),
   #nav_items(
@@ -112,6 +118,9 @@ output$sites_visited <- DT::renderDT({
   DT::datatable(rsites_visited())
 })
 
+output$sites_visited_gt <- render_gt({
+  gt(rsites_visited())
+})
 #Tmap 
 tmap_mode("view")
 output$map_sites <- tmap::renderTmap({

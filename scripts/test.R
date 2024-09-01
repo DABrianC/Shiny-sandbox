@@ -57,3 +57,36 @@ sites_visited_table <- df |>
 #density plot
 ggplot()
 
+
+#table that breaks data up by type of site visit
+
+df <- read_xlsx(here::here("./data/testdata2.xlsx"))
+
+df$type_visit <- df$type_visit |> 
+  recode(`in person` = "in_person"
+         , remote = "Remote"
+         , telephone = "Telephone")
+
+df_sort <- df |> 
+  group_by(location, type_visit, gender) |> 
+  count() |> 
+  pivot_wider(names_from = gender
+              , values_from = n) |> 
+  rename("Location" = location
+         , "Male" = M
+         , "Female" = F
+         , "Type of Visit" = type_visit) |> 
+ gt(rowname_col = "row"
+     , groupname_col = "Type of Visit") |> 
+  sub_missing(missing_text = 0)
+
+df_sort
+
+df_sort2 <- df_sort |> 
+  summary_rows(groups = "Type of Visit"
+               , columns = c("Female", "Male")
+               , funs = list(
+                 Totals = "sum")
+               )
+
+df_sort2
