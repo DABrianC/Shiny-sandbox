@@ -38,8 +38,8 @@ df3 <- df2 |>
            , crs = 4326)
 
 
-write_xlsx(df2,
-           path = "./data/testdata2.xlsx")
+#write_xlsx(df2,
+#           path = "./data/testdata2.xlsx")
 
 sites_visited_table <- df |> 
   st_drop_geometry() |> 
@@ -83,10 +83,10 @@ df_sort <- df |>
 df_sort
 
 df_sort2 <- df_sort |> 
-  summary_rows(groups = "Type of Visit"
-               , columns = c("Female", "Male")
+  summary_rows(groups = TRUE
+               , columns = vars(value)
                , funs = list(
-                 Totals = "sum")
+                 Totals = ~sum(.))
                )
 
 df_sort2
