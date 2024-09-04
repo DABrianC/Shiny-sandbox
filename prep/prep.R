@@ -57,10 +57,19 @@ cards <- list(
   #4
   card(
        width = 1/2,
-       card_header("Placeholder"),
-       gt_output("sites_visited_gt"),
-       full_screen = TRUE
-      ),
+       card_header("Sites Visited",
+                   #class = "d-flex justify-content-between",
+                  #  shiny::downloadLink(
+                   #  outputId="download",
+                    # label=bslib::tooltip(
+                     #  bsicons::bs_icon("file-earmark-image"),
+                      # "Click to download table",
+                      # placement = "right"
+                     ),
+                   gt_output("sites_visited_gt"),
+                   full_screen = TRUE
+       ),
+       
   
   #5
   card(
@@ -70,8 +79,8 @@ cards <- list(
        , full_screen = TRUE),
   
   #6
-  card(card_header("Placeholder2"),
-       markdown("This is a placeholder")
+  card(card_header("Sites Visited by Type of Visit"),
+       gt_output("sites_visited_type_gt")
        , full_screen = TRUE)
   )
   

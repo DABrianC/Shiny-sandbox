@@ -93,7 +93,30 @@ server <- function(input, output, session) {
              , "Female" = F
       )
   })
+
+  rsites_visited_type <- eventReactive(input$file, {
+    req(rtable())
+    
+    df <- rtable() 
+    
+    df$type_visit <- df$type_visit |> 
+      recode(`in person` = "In person"
+              , remote = "Remote"
+              , telephone = "Telephone")
+
+    df <- df |> 
+      group_by(location, type_visit, gender) |> 
+      count() |> 
+      pivot_wider(names_from = gender
+                  , values_from = n) |> 
+      rename("Location" = location
+             , "Male" = M
+             , "Female" = F
+             , "Type of Visit" = type_visit)
+   
+    })  
   
+ 
 #Observable variables
   observeEvent(input$file, {
     req(rtable()) #we need rtable()
@@ -114,13 +137,38 @@ output$DT_table <- DT::renderDT({
   DT::datatable(rtable())
 })
 
+
 output$sites_visited <- DT::renderDT({
   DT::datatable(rsites_visited())
 })
-
+#Sites Visited static table
 output$sites_visited_gt <- render_gt({
   gt(rsites_visited())
 })
+
+#Sites visited by type static table
+output$sites_visited_type_gt <- render_gt({
+    gt(rsites_visited_type(),
+        rowname_col = "Location"
+          , groupname_col = "Type of Visit") |> 
+       sub_missing(missing_text = 0) |> 
+       row_group_order(c("In person", "Remote", "Telephone")) |>
+       tab_style(
+         locations = cells_row_groups(),
+         style = cell_text(weight = "bold")) |> 
+       tab_stub_indent(rows = everything()) |> 
+       summary_rows(
+         fns =  list(label = md("**Total**"), id = "totals", fn = "sum"),
+         side = "bottom"
+       ) |> 
+      tab_style(
+         locations = cells_summary(),
+         style = list(cell_fill(color = "lightgrey" |> adjust_luminance(steps = +1))
+                      , cell_text(weight = "bold")
+         )
+       )
+})
+
 #Tmap 
 tmap_mode("view")
 output$map_sites <- tmap::renderTmap({

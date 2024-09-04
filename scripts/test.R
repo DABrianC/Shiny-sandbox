@@ -63,7 +63,7 @@ ggplot()
 df <- read_xlsx(here::here("./data/testdata2.xlsx"))
 
 df$type_visit <- df$type_visit |> 
-  recode(`in person` = "in_person"
+  recode(in_person = "In person"
          , remote = "Remote"
          , telephone = "Telephone")
 
@@ -75,18 +75,26 @@ df_sort <- df |>
   rename("Location" = location
          , "Male" = M
          , "Female" = F
-         , "Type of Visit" = type_visit) |> 
- gt(rowname_col = "row"
+         , "Type of Visit" = type_visit) 
+
+df_sort |> 
+   gt(rowname_col = "Location"
      , groupname_col = "Type of Visit") |> 
-  sub_missing(missing_text = 0)
-
-df_sort
-
-df_sort2 <- df_sort |> 
-  summary_rows(groups = TRUE
-               , columns = vars(value)
-               , funs = list(
-                 Totals = ~sum(.))
-               )
-
-df_sort2
+  sub_missing(missing_text = 0) |> 
+  row_group_order(c("In person", "Remote", "Telephone")) |>
+  tab_style(
+    locations = cells_row_groups(),
+    style = cell_text(weight = "bold")) |> 
+  tab_stub_indent(rows = everything()) |> 
+  summary_rows(
+    fns =  list(label = md("**Total**"), id = "totals", fn = "sum"),
+    side = "bottom"
+  ) |> 
+  tab_style(
+    locations = cells_summary(),
+    style = list(cell_fill(color = "lightgrey" |> adjust_luminance(steps = +1))
+    , cell_text(weight = "bold")
+    )
+  )
+  
+ 
